@@ -22,9 +22,6 @@ def get_book_info(book_id):
     result = response.text
     # print(book_id)
     book_info = json.loads(result)["items"]
-    if len(book_info) == 0:
-        # print(result)
-        return "No Title!"
     book_title = book_info[0]["title"]
     return book_title
 
@@ -56,7 +53,7 @@ def get_recommend_book_by_ckey(book_ckey_list):
         book_ckey = book_ckey[0]
         # print(book_ckey)
         book_title = get_book_info_by_ckey(book_ckey, cur_ckey)
-        if book_title == "None Title":
+        if len(book_title.strip()) == 0:
             continue
         book_title_list.append(book_title)
         # print(book_title)
