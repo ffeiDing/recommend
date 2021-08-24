@@ -84,7 +84,7 @@ def print_list(list_name):
 
 
 if __name__ == "__main__":
-    load_data = False  # 是否读取保存的数据
+    load_data = True  # 是否读取保存的数据
     server = "127.0.0.1"    # 数据库服务器名称或IP
     user = "root"   #  用户名
     password = "284284dfl" # 密码

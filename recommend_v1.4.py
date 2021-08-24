@@ -74,8 +74,8 @@ def recommandList(data, W, user, k=3, N=10):
         for item_j, sim_value in sorted(W[item_i].items(), key=operator.itemgetter(1), reverse=True)[0:k]:  # 获得与图书i相似的k本图书
             if item_j not in data[user].keys():  # 该相似的图书不在用户user的记录里
                 rank.setdefault(item_j, 0)
-                # rank[item_j] += float(item_i_score) * sim_value * idx * book_weight
-                rank[item_j] += float(item_i_score) * sim_value * (idx * book_weight + 1)
+                rank[item_j] += float(item_i_score) * sim_value * idx * book_weight
+                # rank[item_j] += float(item_i_score) * sim_value * (idx * book_weight + 1)
         idx = idx + 1
 
     print("----4.为某个用户推荐----")
@@ -88,21 +88,21 @@ def print_list(list_name):
 
 
 if __name__ == "__main__":
-    load_data = True # 是否读取保存的数据
+    load_data = False # 是否读取保存的数据
     server = "127.0.0.1"    # 数据库服务器名称或IP
     user = "root"   #  用户名
     password = "284284dfl" # 密码
     database =  "loan" # 数据库名称
     if load_data:
-        data = load_dic("data/data_v1.3.pkl")
-        W = load_dic("data/W_v1.3.pkl")
+        data = load_dic("data/data_v1.4.pkl")
+        W = load_dic("data/W_v1.4.pkl")
     else:
         db = pymysql.connect(host=server, user=user, passwd=password, db=database)
         cur = db.cursor()
         data = loadData(cur)  # 获得数据
-        save_dic("data/data_v1.3.pkl", data)
+        save_dic("data/data_v1.4.pkl", data)
         W = similarity(data)  # 计算图书相似矩阵
-        save_dic("data/W_v1.3.pkl", W)
+        save_dic("data/W_v1.4.pkl", W)
         print("---已保存数据---")
     # user_id = "00639061"
     user_id = "1606191027" # "1606191027" # "0006171162"
