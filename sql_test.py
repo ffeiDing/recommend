@@ -1,9 +1,7 @@
-from math import sqrt
-import operator
 import pymysql
-import pickle
 import json
 import requests
+import openpyxl
 
 server = "127.0.0.1"    # 数据库服务器名称或IP
 user = "root"   #  用户名
@@ -34,7 +32,7 @@ def get_book_info_by_ckey(book_ckey, cur):
         return "None Title"
     return book_info[0][1]
 
-# 获取推荐书籍列表
+# 根据id list获取书籍title list
 def get_recommend_book(book_id_list):
     book_title_list = []
     for book_id in book_id_list:
@@ -44,8 +42,8 @@ def get_recommend_book(book_id_list):
         # print(book_title)
     return book_title_list
 
-# 根据ckey获取推荐书籍列表
-def get_recommend_book_by_ckey(book_ckey_list):
+# 根据ckey list获取书籍title list
+def get_book_title_list_by_ckey_list(book_ckey_list):
     db = pymysql.connect(host=server, user=user, passwd=password, db=database_ckey)
     cur_ckey = db.cursor()
     book_title_list = []
@@ -76,9 +74,8 @@ def get_user_history(user_id):
     return book_title_list
 
 
-
-# 根据ckey获取用户历史借阅书籍列表
-def get_user_history_by_ckey(user_id):
+# 根据user_id获取用户历史借阅书籍列表
+def get_history_book_title_list_by_user_id(user_id):
     book_title_list = []
     db = pymysql.connect(host=server, user=user, passwd=password, db=database)
     cur = db.cursor()
@@ -100,10 +97,63 @@ def get_user_id_by_name(name):
     cur = db.cursor()
     sql = "SELECT altid, name, item_id, ckey FROM userlog WHERE name = '" + name + "'"
     cur.execute(sql)
-    print(cur.fetchall())
+    return cur.fetchall()[0][0]
+    
 
+# 根据书籍条码获得ckey
+def get_ckey_by_book_id(book_id):
+    db = pymysql.connect(host=server, user=user, passwd=password, db=database)
+    cur = db.cursor()
+    sql = "SELECT altid, item_id, ckey FROM userlog WHERE item_id='"+book_id+"'"
+    cur.execute(sql) #共7974414条记录
+    book_info = cur.fetchall()
+    if len(book_info) == 0:
+        return ""
+    return book_info[0][2]
+
+# 根据书籍条码list获取ckey_list
+def get_ckey_list_by_book_id_list(book_id_list):
+    ckey_list = []
+    for book_id in book_id_list:
+        book_ckey = get_ckey_by_book_id(book_id)
+        if len(book_ckey.strip()) == 0:
+            continue
+        ckey_list.append(book_ckey)
+    return ckey_list
+
+# 读取用户xls格式的借书记录，返回借阅过图书的id list
+def get_user_history_book_id_list_from_xls(file_name):
+    first_row = True
+    book_id_list = []
+    workbook = openpyxl.load_workbook(file_name)
+    sheetnames = workbook.sheetnames
+    sheet = workbook[sheetnames[0]]
+    for row in sheet.rows:
+        if first_row:
+            first_row = False
+            continue
+        book_id = row[4].value
+        book_id_list.append(book_id)
+    book_id_list = book_id_list[: :-1]
+    return book_id_list 
+
+# 读取用户xls格式的借书记录，返回借阅过图书的title list
+def get_user_history_book_title_list_from_xls(file_name):
+    first_row = True
+    book_title_list = []
+    workbook = openpyxl.load_workbook(file_name)
+    sheetnames = workbook.sheetnames
+    sheet = workbook[sheetnames[0]]
+    for row in sheet.rows:
+        if first_row:
+            first_row = False
+            continue
+        book_title = row[3].value
+        book_title_list.append(book_title)
+    book_title_list = book_title_list[: :-1]
+    return book_title_list 
 
 if __name__ == "__main__":
     # get_user_id_by_name("王昊贤")
     # print(get_recommend_book_by_ckey(["012000905826"]))
-    print(get_user_history_by_ckey("1400012962"))
+    print(get_history_book_title_list_by_user_id("1400012962"))
