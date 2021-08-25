@@ -130,7 +130,7 @@ if __name__ == "__main__":
         print("---已保存数据---")
 
     # user_id = "1606191027" # "1606191027" # "0006171162"
-    user_file_name = "data/iPatron_1906194055_userlog.xlsx"
+    user_file_name = "data/iPatron_1906194055_userlog_1.xlsx"
 
     # recommend_book_title_list = recommend_by_user_id(data, W, user_id, 10, 40)  #推荐
     recommend_book_title_list = recommend_by_user_xls(user_file_name, W, 10, 40)

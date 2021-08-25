@@ -1,4 +1,4 @@
-# 使用书籍的ckey代替id
+# 使用书籍的ckey代替id  没有时间加权
 
 from math import sqrt
 import operator
@@ -91,7 +91,7 @@ def recommend_by_history_book_ckey_list(history_list, W, k=3, N=10):
         for item_j, sim_value in sorted(W[item_i].items(), key=operator.itemgetter(1), reverse=True)[0:k]:  # 获得与图书i相似的k本图书
             if item_j not in history_list:  # 该相似的图书不在用户user的记录里
                 rank.setdefault(item_j, 0)
-                rank[item_j] += float(item_i_score) * sim_value * idx * book_weight
+                rank[item_j] += float(item_i_score) * sim_value 
                 # rank[item_j] += float(item_i_score) * sim_value * (idx * book_weight + 1)
         idx = idx + 1
     print("----4.为某个用户推荐----")
