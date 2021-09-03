@@ -73,6 +73,7 @@ def recommend_by_user_id(data, W, user, k=3, N=10):
         for item_j, sim_value in sorted(W[item_i].items(), key=operator.itemgetter(1), reverse=True)[0:k]:  # 获得与图书i相似的k本图书
             if item_j not in data[user].keys():  # 该相似的图书不在用户user的记录里
                 rank.setdefault(item_j, 0)
+                # rank[item_j] += float(item_i_score) * sim_value
                 rank[item_j] += float(item_i_score) * sim_value * idx * book_weight
                 # rank[item_j] += float(item_i_score) * sim_value * (idx * book_weight + 1)
         idx = idx + 1
@@ -91,6 +92,7 @@ def recommend_by_history_book_ckey_list(history_list, W, k=3, N=10):
         for item_j, sim_value in sorted(W[item_i].items(), key=operator.itemgetter(1), reverse=True)[0:k]:  # 获得与图书i相似的k本图书
             if item_j not in history_list:  # 该相似的图书不在用户user的记录里
                 rank.setdefault(item_j, 0)
+                # rank[item_j] += float(item_i_score) * sim_value
                 rank[item_j] += float(item_i_score) * sim_value * idx * book_weight
                 # rank[item_j] += float(item_i_score) * sim_value * (idx * book_weight + 1)
         idx = idx + 1
@@ -129,14 +131,15 @@ if __name__ == "__main__":
         save_dic("data/W_v1.4.pkl", W)
         print("---已保存数据---")
 
-    # user_id = "1606191027" # "1606191027" # "0006171162"
-    user_file_name = "data/iPatron_1906194055_userlog_1.xlsx"
+    # user_id = "0006182129" # "1606191027" # "0006171162"
+    user_file_name = "data/iPatron_1906194055_userlog_1.xlsx" # "data/iPatron_1906194055_userlog_1.xlsx"
 
     # recommend_book_title_list = recommend_by_user_id(data, W, user_id, 10, 40)  #推荐
     recommend_book_title_list = recommend_by_user_xls(user_file_name, W, 10, 40)
 
     # history_book_title_list = get_history_book_title_list_by_user_id(user_id)
     history_book_title_list = get_user_history_book_title_list_from_xls(user_file_name)
+
     print("借书历史：")
     print_list(history_book_title_list)
     print(len(history_book_title_list))

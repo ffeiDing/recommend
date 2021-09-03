@@ -129,14 +129,14 @@ if __name__ == "__main__":
         save_dic("data/W_v1.2.pkl", W)
         print("---已保存数据---")
 
-    # user_id = "1606191027" # "1606191027" # "0006171162"
-    user_file_name = "data/iPatron_1906194055_userlog.xlsx"
+    user_id = "0006182129" # "1606191027" # "0006171162"
+    # user_file_name = "data/iPatron_1906194055_userlog.xlsx"
 
-    # recommend_book_title_list = recommend_by_user_id(data, W, user_id, 10, 40)  #推荐
-    recommend_book_title_list = recommend_by_user_xls(user_file_name, W, 10, 40)
+    recommend_book_title_list = recommend_by_user_id(data, W, user_id, 10, 40)  #推荐
+    # recommend_book_title_list = recommend_by_user_xls(user_file_name, W, 10, 40)
 
-    # history_book_title_list = get_history_book_title_list_by_user_id(user_id)
-    history_book_title_list = get_user_history_book_title_list_from_xls(user_file_name)
+    history_book_title_list = get_history_book_title_list_by_user_id(user_id)
+    # history_book_title_list = get_user_history_book_title_list_from_xls(user_file_name)
     print("借书历史：")
     print_list(history_book_title_list)
     print(len(history_book_title_list))

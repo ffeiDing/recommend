@@ -1,5 +1,7 @@
 # 借书历史根据时间加权
 
+# 同一大类图书加权
+
 from math import sqrt
 import operator
 import pymysql
@@ -73,6 +75,7 @@ def recommend_by_user_id(data, W, user, k=3, N=10):
         for item_j, sim_value in sorted(W[item_i].items(), key=operator.itemgetter(1), reverse=True)[0:k]:  # 获得与图书i相似的k本图书
             if item_j not in data[user].keys():  # 该相似的图书不在用户user的记录里
                 rank.setdefault(item_j, 0)
+                # rank[item_j] += float(item_i_score) * sim_value
                 rank[item_j] += float(item_i_score) * sim_value * idx * book_weight
                 # rank[item_j] += float(item_i_score) * sim_value * (idx * book_weight + 1)
         idx = idx + 1
@@ -88,10 +91,19 @@ def recommend_by_history_book_ckey_list(history_list, W, k=3, N=10):
     idx = 1
     for item_i in history_list:  # 获得用户user历史记录，如A用户的历史记录为{'a': '1', 'b': '1', 'd': '1'}
         item_i_score = 1.0
+        item_same_type = 1.0
         for item_j, sim_value in sorted(W[item_i].items(), key=operator.itemgetter(1), reverse=True)[0:k]:  # 获得与图书i相似的k本图书
             if item_j not in history_list:  # 该相似的图书不在用户user的记录里
                 rank.setdefault(item_j, 0)
-                rank[item_j] += float(item_i_score) * sim_value * idx * book_weight
+                # rank[item_j] += float(item_i_score) * sim_value
+                if item_j[0] == item_i[0]:
+                    item_same_type = 10
+                    print(item_i)
+                    print(item_j)
+                    print(item_same_type)
+                else:
+                    item_same_type = 1
+                rank[item_j] += float(item_i_score) * sim_value * idx * book_weight * item_same_type
                 # rank[item_j] += float(item_i_score) * sim_value * (idx * book_weight + 1)
         idx = idx + 1
     print("----4.为某个用户推荐----")
@@ -112,35 +124,35 @@ def print_list(list_name):
 
 
 if __name__ == "__main__":
-    load_data = True # 是否读取保存的数据
+    load_data = False # 是否读取保存的数据
     server = "127.0.0.1"    # 数据库服务器名称或IP
     user = "root"   #  用户名
     password = "284284dfl" # 密码
-    database =  "loan" # 数据库名称
+    database =  "loan_new" # 数据库名称
     if load_data:
-        data = load_dic("data/data_v1.3.pkl")
-        W = load_dic("data/W_v1.3.pkl")
+        data = load_dic("data/data_new.pkl")
+        W = load_dic("data/W_new.pkl")
     else:
         db = pymysql.connect(host=server, user=user, passwd=password, db=database)
         cur = db.cursor()
         data = loadData(cur)  # 获得数据
-        save_dic("data/data_v1.3.pkl", data)
+        save_dic("data/data_new.pkl", data)
         W = similarity(data)  # 计算图书相似矩阵
-        save_dic("data/W_v1.3.pkl", W)
+        save_dic("data/W_new.pkl", W)
         print("---已保存数据---")
 
     user_id = "0006182129" # "1606191027" # "0006171162"
-    # user_file_name = "data/iPatron_1906194055_userlog.xlsx"
+    # user_file_name = "data/iPatron_1906194055_userlog_1.xlsx" # "data/iPatron_1906194055_userlog_1.xlsx"
 
     recommend_book_title_list = recommend_by_user_id(data, W, user_id, 10, 40)  #推荐
     # recommend_book_title_list = recommend_by_user_xls(user_file_name, W, 10, 40)
 
     history_book_title_list = get_history_book_title_list_by_user_id(user_id)
     # history_book_title_list = get_user_history_book_title_list_from_xls(user_file_name)
+
     print("借书历史：")
     print_list(history_book_title_list)
     print(len(history_book_title_list))
     print()
     print("推荐书单：")
     print_list(recommend_book_title_list)
-

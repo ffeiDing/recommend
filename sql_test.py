@@ -6,8 +6,12 @@ import openpyxl
 server = "127.0.0.1"    # 数据库服务器名称或IP
 user = "root"   #  用户名
 password = "284284dfl" # 密码
-database =  "loan" # 数据库名称
+database =  "loan_new" # 数据库名称
 database_ckey =  "ckey2title" # 数据库名称
+
+def get_book_main_callnumber_by_ckey(book_ckey):
+    callnumber = ""
+    return callnumber[0]
 
 # 根据书籍ID获取书名
 def get_book_info(book_id):
