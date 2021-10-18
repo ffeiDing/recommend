@@ -1,6 +1,5 @@
 # 借书历史根据时间加权
-
-# 同一大类图书加权(已取消)
+# 更新 目前信息20210903
 
 from math import sqrt
 import operator
@@ -14,7 +13,22 @@ def save_dic(name, dic):
 
 def load_dic(name):
     with open(name, 'rb') as f:
-        return pickle.load(f)       
+        return pickle.load(f)
+
+def update_data(data):
+    # cur.execute("SELECT altid, item_id, ckey FROM userlog ORDER BY date_checkout DESC LIMIT 5000000") #共7974414条记录
+    cur.execute("SELECT altid, item_id, ckey FROM userlog") #共7974414条记录
+    # print(cur.fetchone())
+    data = {}
+
+    for line in cur.fetchall():
+        user_id = line[0]
+        book_id = line[1]
+        book_ckey = line[2]
+        data.setdefault(user_id,{})
+        data[user_id][book_ckey] = 1
+    # print(data)
+    return data
 
 
 # 1.构建用户-->图书的倒排
@@ -51,6 +65,7 @@ def similarity(data):
                     W[item_i][item_j] += 1
 
     print("----2.构造共现矩阵----")
+    
     # print('N:', N)
     # print('C', C)
 
@@ -89,7 +104,9 @@ def recommend_by_user_id(data, W, user, k=3, N=10):
 # 3.根据用户的历史记录，给用户推荐图书
 def recommend_by_all_user(data, W, k=3, N=10):
     recommend = {}
+    user_idx = 0
     for user in data.keys():
+        user_idx += 1
         rank = {}
         book_weight = 1.0/len(data[user])
         idx = 1
@@ -103,13 +120,13 @@ def recommend_by_all_user(data, W, k=3, N=10):
                     # rank[item_j] += float(item_i_score) * sim_value * (idx * book_weight + 1)
             idx += 1
 
-        print("----4.为某个用户推荐----")
+        print("----为用户"+user_idx+"推荐----")
         recommend_ckey_list = sorted(rank.items(), key=operator.itemgetter(1), reverse=True)[0:N]
         recommend_book_title_list = get_book_title_list_by_ckey_list(recommend_ckey_list)
         recommend.setdefault(user, {})
         recommend[user]["ckey_list"] = recommend_ckey_list
         recommend[user]["title_list"] = recommend_book_title_list
-    save_dic("data/recommend_20211018.pkl", recommend)
+    save_dic("data/recommend_20211018update.pkl", recommend)
     return
 
 
@@ -152,21 +169,23 @@ def print_list(list_name):
 
 
 if __name__ == "__main__":
-    load_data = True # 是否读取保存的数据
+    load_data = False # 是否读取保存的数据
     server = "127.0.0.1"    # 数据库服务器名称或IP
     user = "root"   #  用户名
     password = "284284dfl" # 密码
     database =  "loan_new" # 数据库名称
     if load_data:
         data = load_dic("data/data_new.pkl")
-        W = load_dic("data/W_new.pkl")
+        W = load_dic("data/W1_20211018.pkl")
+        N = load_dic("data/N_20211018.pkl")
     else:
         db = pymysql.connect(host=server, user=user, passwd=password, db=database)
         cur = db.cursor()
-        data = loadData(cur)  # 获得数据
-        save_dic("data/data_new.pkl", data)
+        data = load_dic("data/data_new.pkl")
+        data = update_data(data)  # 获得数据
+        save_dic("data/data_20211018.pkl", data)
         W = similarity(data)  # 计算图书相似矩阵
-        save_dic("data/W_new.pkl", W)
+        save_dic("data/W_20211018.pkl", W)
         print("---已保存数据---")
     
     recommend_by_all_user(data, W, 10, 40)
