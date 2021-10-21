@@ -20,7 +20,7 @@ def load_dic(name):
 # 1.构建用户-->图书的倒排
 def loadData(cur):
     # cur.execute("SELECT altid, item_id, ckey FROM userlog ORDER BY date_checkout DESC LIMIT 5000000") #共7974414条记录
-    cur.execute("SELECT altid, callno FROM userlog") # 9213235
+    cur.execute("SELECT altid, callno FROM userlog") # 9213235 178874名用户
     # print(cur.fetchall()[0][0])
     data = {}
 

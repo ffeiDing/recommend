@@ -194,8 +194,8 @@ def print_list(list_name):
 if __name__ == "__main__":
     test = True
     if test:
-        recommend = load_dic("data/recommend_20211019_all.pkl")
-        print(recommend["1400012962"])
+        recommend = load_dic("data/recommend_20211020_all.pkl")
+        print(recommend["1906194055"])
     else:
         server = "127.0.0.1"    # 数据库服务器名称或IP
         user = "root"   #  用户名
