@@ -35,7 +35,9 @@ def update_data(cur, data, N, S, W):
                 W.setdefault(book_ckey, {})
             N[book_ckey] += 1
             for other_book in data[user_id].keys():
+                S[book_ckey].setdefault(other_book, 0)
                 S[book_ckey][other_book] += 1
+                S[other_book].setdefault(book_ckey, 0)
                 S[other_book][book_ckey] += 1
                 W[book_ckey][other_book] = S[book_ckey][other_book] / sqrt(N[book_ckey]* N[other_book])
                 W[other_book][book_ckey] = W[book_ckey][other_book]
@@ -136,18 +138,18 @@ def recommend_by_all_user(data, W, k=3, N=10):
             for item_j, sim_value in sorted(W[item_i].items(), key=operator.itemgetter(1), reverse=True)[0:k]:  # 获得与图书i相似的k本图书
                 if item_j not in data[user].keys():  # 该相似的图书不在用户user的记录里
                     rank.setdefault(item_j, 0)
-                    # rank[item_j] += float(item_i_score) * sim_value
-                    rank[item_j] += float(item_i_score) * sim_value * idx * book_weight
+                    rank[item_j] += float(item_i_score) * sim_value
+                    # rank[item_j] += float(item_i_score) * sim_value * idx * book_weight
                     # rank[item_j] += float(item_i_score) * sim_value * (idx * book_weight + 1)
             idx += 1
 
-        print("----为用户"+user_idx+"推荐----")
+        print("----为用户"+str(user_idx)+"推荐----")
         recommend_ckey_list = sorted(rank.items(), key=operator.itemgetter(1), reverse=True)[0:N]
         recommend_book_title_list = get_book_title_list_by_ckey_list(recommend_ckey_list)
         recommend.setdefault(user, {})
         recommend[user]["ckey_list"] = recommend_ckey_list
         recommend[user]["title_list"] = recommend_book_title_list
-    save_dic("data/recommend_20211018update.pkl", recommend)
+    save_dic("data/recommend_20211019update.pkl", recommend)
     return
 
 
@@ -190,36 +192,42 @@ def print_list(list_name):
 
 
 if __name__ == "__main__":
-    server = "127.0.0.1"    # 数据库服务器名称或IP
-    user = "root"   #  用户名
-    password = "284284dfl" # 密码
-    database =  "loan_new" # 数据库名称
-    # data = load_dic("data/data_new.pkl")
-    # W = load_dic("data/W1_20211018.pkl")
-    # N = load_dic("data/N_20211018.pkl")
-    # S = load_dic("data/N_20211018.pkl")
-    data = {}
-    W = {}
-    N = {}
-    S = {}
-    db = pymysql.connect(host=server, user=user, passwd=password, db=database)
-    cur = db.cursor()
-    data, W = update_data(cur, data, N, S, W)
-    recommend_by_all_user(data, W, 10, 40)
+    test = True
+    if test:
+        recommend = load_dic("data/recommend_20211019_all.pkl")
+        print(recommend["1400012962"])
+    else:
+        server = "127.0.0.1"    # 数据库服务器名称或IP
+        user = "root"   #  用户名
+        password = "284284dfl" # 密码
+        database =  "loan_new" # 数据库名称
+        data = load_dic("data/data_20211018update.pkl")
+        W = load_dic("data/W_20211018update.pkl")
+        # N = load_dic("data/N_20211018update.pkl")
+        # S = load_dic("data/S_20211018update.pkl")
 
-    # user_id = "0006182129" # "1606191027" # "0006171162"
-    # # user_file_name = "data/iPatron_1906194055_userlog_1.xlsx" # "data/iPatron_1906194055_userlog_1.xlsx"
+        # # data = {}
+        # # W = {}
+        # # N = {}
+        # # S = {}
+        # db = pymysql.connect(host=server, user=user, passwd=password, db=database)
+        # cur = db.cursor()
+        # data, W = update_data(cur, data, N, S, W)
+        recommend_by_all_user(data, W, 10, 50)
 
-    # _, recommend_book_title_list = recommend_by_user_id(data, W, user_id, 10, 40)  #推荐
-    # # recommend_book_title_list = recommend_by_user_xls(user_file_name, W, 10, 40)
+        # user_id = "0006182129" # "1606191027" # "0006171162"
+        # # user_file_name = "data/iPatron_1906194055_userlog_1.xlsx" # "data/iPatron_1906194055_userlog_1.xlsx"
 
-    # history_book_title_list = get_history_book_title_list_by_user_id(user_id)
-    # # history_book_title_list = get_user_history_book_title_list_from_xls(user_file_name)
+        # _, recommend_book_title_list = recommend_by_user_id(data, W, user_id, 10, 40)  #推荐
+        # # recommend_book_title_list = recommend_by_user_xls(user_file_name, W, 10, 40)
 
-    # print("借书历史：")
-    # print_list(history_book_title_list)
-    # print(len(history_book_title_list))
-    # print()
-    # print("推荐书单：")
-    # print_list(recommend_book_title_list)
+        # history_book_title_list = get_history_book_title_list_by_user_id(user_id)
+        # # history_book_title_list = get_user_history_book_title_list_from_xls(user_file_name)
+
+        # print("借书历史：")
+        # print_list(history_book_title_list)
+        # print(len(history_book_title_list))
+        # print()
+        # print("推荐书单：")
+        # print_list(recommend_book_title_list)
     
