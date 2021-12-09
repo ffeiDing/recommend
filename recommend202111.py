@@ -30,7 +30,7 @@ def loadData(cur_list):
             user_id = line[0]
             book_callnum = line[1]
             if book_callnum not in callnum2ckey.keys():
-                print(book_callnum)
+                # print(book_callnum)
                 continue
             book_ckey = callnum2ckey[book_callnum]
             data.setdefault(user_id,{})
@@ -169,8 +169,8 @@ if __name__ == "__main__":
     password = "284284dfl" # 密码
     database =  "userlog_20211020" # 数据库名称
     if load_data:
-        data = load_dic("data/data_202110.pkl")
-        W = load_dic("data/W_202110.pkl")
+        data = load_dic("data/data_202111.pkl")
+        W = load_dic("data/W_202111.pkl")
     else:
         cur_list = []
         for i in month_list:
