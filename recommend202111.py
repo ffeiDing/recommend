@@ -129,19 +129,10 @@ def recommend_by_history_book_ckey_list(history_list, W, k=3, N=10):
     idx = 1
     for item_i in history_list:  # 获得用户user历史记录，如A用户的历史记录为{'a': '1', 'b': '1', 'd': '1'}
         item_i_score = 1.0
-        item_same_type = 1.0
         for item_j, sim_value in sorted(W[item_i].items(), key=operator.itemgetter(1), reverse=True)[0:k]:  # 获得与图书i相似的k本图书
             if item_j not in history_list:  # 该相似的图书不在用户user的记录里
                 rank.setdefault(item_j, 0)
-                # rank[item_j] += float(item_i_score) * sim_value
-                if item_j[0] == item_i[0]:
-                    item_same_type = 10
-                    print(item_i)
-                    print(item_j)
-                    print(item_same_type)
-                else:
-                    item_same_type = 1
-                rank[item_j] += float(item_i_score) * sim_value * idx * book_weight * item_same_type
+                rank[item_j] += float(item_i_score) * sim_value * idx * book_weight
                 # rank[item_j] += float(item_i_score) * sim_value * (idx * book_weight + 1)
         idx = idx + 1
     print("----4.为某个用户推荐----")
@@ -173,12 +164,12 @@ if __name__ == "__main__":
         W = load_dic("data/W_202111.pkl")
     else:
         cur_list = []
+        db = pymysql.connect(host=server, user=user, passwd=password, db=database)
+        cur_list.append(db.cursor())
         for i in month_list:
             database_month = "userlog_" + i
             db_month = pymysql.connect(host=server, user=user, passwd=password, db=database_month)
             cur_list.append(db_month.cursor())
-        db = pymysql.connect(host=server, user=user, passwd=password, db=database)
-        cur_list.append(db.cursor())
         data = loadData(cur_list)  # 获得数据
         save_dic("data/data_202111.pkl", data)
         W = similarity(data)  # 计算图书相似矩阵
