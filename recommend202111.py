@@ -119,7 +119,7 @@ def recommend_by_all_user(data, W, k=3, N=10):
         recommend.setdefault(user, {})
         recommend[user]["ckey_list"] = recommend_ckey_list
         # recommend[user]["title_list"] = recommend_book_title_list
-    save_dic("data/recommend_202110.pkl", recommend)
+    save_dic("data/recommend_202111.pkl", recommend)
     return
 
 
@@ -165,7 +165,7 @@ if __name__ == "__main__":
     load_data = False # 是否读取保存的数据
     server = "127.0.0.1"    # 数据库服务器名称或IP
     user = "root"   #  用户名
-    month_list = ["202110"]
+    month_list = ["202110", "202111"]
     password = "284284dfl" # 密码
     database =  "userlog_20211020" # 数据库名称
     if load_data:
@@ -180,9 +180,9 @@ if __name__ == "__main__":
         db = pymysql.connect(host=server, user=user, passwd=password, db=database)
         cur_list.append(db.cursor())
         data = loadData(cur_list)  # 获得数据
-        save_dic("data/data_202110.pkl", data)
+        save_dic("data/data_202111.pkl", data)
         W = similarity(data)  # 计算图书相似矩阵
-        save_dic("data/W_202110.pkl", W)
+        save_dic("data/W_202111.pkl", W)
         print("---已保存数据---")
     
     recommend_by_all_user(data, W, 10, 200)
