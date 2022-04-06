@@ -18,6 +18,23 @@ def load_dic(name):
         return pickle.load(f)       
 
 
+def get_book_info(book_id):
+    if "/" in book_id:
+        return "No Title!"
+    url = "http://162.105.138.200:8085/symws2016041/rest/standard/lookupTitleInfo?clientID=SymWSTestClient&includeAvailabilityInfo=true&includeOPACInfo=true&includeItemInfo=true&json=true&includeMarcHoldings=true&marcEntryFilter=ALL&titleID="+book_id
+    print(url)
+    response = requests.get(url)
+    # print(response.headers)
+    result = response.text
+    # print(result)
+    book_info = json.loads(result)["TitleInfo"]
+    book_title = " "
+    if book_info:
+        if "title" in book_info[0].keys():
+            book_title = book_info[0]["title"]
+    # print(book_title)
+    return book_title
+
 # 1.构建用户-->图书的倒排
 def loadData(cur_list):
     data = {}
@@ -36,26 +53,32 @@ def loadData(cur_list):
             data.setdefault(book_ckey, 0)
             data[book_ckey] += 1
     book = []
+    name = []
+    num = []
     for  item_i, _ in sorted(data.items(), key=operator.itemgetter(1), reverse=True)[0:5000]:
         book.append(item_i)
-    csvFile=open("data/hotbook_202110_202202.csv",'w',newline='')
+        title = get_book_info(item_i)
+        name.append(title)
+        num.append(data[item_i])
+
+    csvFile=open("data/hotbook_202110_202203.csv",'w',newline='')
     writer=csv.writer(csvFile)
     for i in range(len(book)):
         writer.writerow((i+1, book[i]))
-
     csvFile.close()
 
-        # res = {}
-        # res["hotbook_ckey_list"] = book
-        # save_dic("data/hotbook.pkl", res)
-        # print(res)
+    csvFile=open("data/hotbook_202110_202203_withname.csv",'w',newline='')
+    writer=csv.writer(csvFile)
+    for i in range(len(book)):
+        writer.writerow((i+1, book[i], name[i], num[i]))
+    csvFile.close()
     return
 
 
 if __name__ == "__main__":
     server = "127.0.0.1"    # 数据库服务器名称或IP
     user = "root"   #  用户名
-    month_list = ["202110", "202111", "202112", "202201", "202202"]
+    month_list = ["202110", "202111", "202112", "202201", "202202", "202203"]
     password = "284284dfl" # 密码
     cur_list = []
     for i in month_list:
@@ -64,6 +87,3 @@ if __name__ == "__main__":
         db_month = pymysql.connect(host=server, user=user, passwd=password, db=database_month)
         cur_list.append(db_month.cursor())
     loadData(cur_list)  # 获得数据
-
-
-# 
