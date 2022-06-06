@@ -55,22 +55,36 @@ def loadData(cur_list):
     book = []
     name = []
     num = []
-    for  item_i, _ in sorted(data.items(), key=operator.itemgetter(1), reverse=True)[0:5000]:
+    for  item_i, _ in sorted(data.items(), key=operator.itemgetter(1), reverse=True)[0:5500]:
         book.append(item_i)
         title = get_book_info(item_i)
         name.append(title)
         num.append(data[item_i])
 
-    csvFile=open("data/hotbook_202110_202203.csv",'w',newline='')
+
+    idx = 0
+    csvFile=open("data/hotbook_202110_202204.csv",'w',newline='')
     writer=csv.writer(csvFile)
     for i in range(len(book)):
-        writer.writerow((i+1, book[i]))
+        if idx > 5000:
+            break
+        if "馆际" in name[i] or "耳机" in name[i] or "教程" in name[i]:
+            continue
+        idx += 1
+        writer.writerow((idx, book[i]))
     csvFile.close()
 
-    csvFile=open("data/hotbook_202110_202203_withname.csv",'w',newline='')
+
+    idx = 0
+    csvFile=open("data/hotbook_202110_202204_withname.csv",'w',newline='')
     writer=csv.writer(csvFile)
     for i in range(len(book)):
-        writer.writerow((i+1, book[i], name[i], num[i]))
+        if idx > 5000:
+            break
+        if "馆际" in name[i] or "耳机" in name[i] or "教程" in name[i]:
+            continue
+        idx += 1
+        writer.writerow((idx, book[i], name[i], num[i]))
     csvFile.close()
     return
 
@@ -78,7 +92,7 @@ def loadData(cur_list):
 if __name__ == "__main__":
     server = "127.0.0.1"    # 数据库服务器名称或IP
     user = "root"   #  用户名
-    month_list = ["202110", "202111", "202112", "202201", "202202", "202203"]
+    month_list = ["202110", "202111", "202112", "202201", "202202", "202203", "202204"]
     password = "284284dfl" # 密码
     cur_list = []
     for i in month_list:
