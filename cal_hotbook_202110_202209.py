@@ -63,12 +63,12 @@ def loadData(cur_list):
 
 
     idx = 0
-    csvFile=open("data/hotbook_202110_202208.csv",'w',newline='')
+    csvFile=open("data/hotbook_202110_202209.csv",'w',newline='')
     writer=csv.writer(csvFile)
     for i in range(len(book)):
         if idx > 4999:
             break
-        if "馆际" in name[i] or "耳机" in name[i] or "教程" in name[i] or "指导" in name[i] or "引论" in name[i] or "数学分析" in name[i] or "高等代数" in name[i] or "考试" in name[i] or "报" in name[i]:
+        if "馆际" in name[i] or "耳机" in name[i] or "教程" in name[i] or "指导" in name[i] or "引论" in name[i] or "数学分析" in name[i] or "高等代数" in name[i] or "考试" in name[i] or "报" in name[i] or "刊" in name[i] or "原理" in name[i]:
             continue
         idx += 1
         writer.writerow((idx, book[i]))
@@ -76,12 +76,12 @@ def loadData(cur_list):
 
 
     idx = 0
-    csvFile=open("data/hotbook_202110_202208_withname.csv",'w',newline='')
+    csvFile=open("data/hotbook_202110_202209_withname.csv",'w',newline='')
     writer=csv.writer(csvFile)
     for i in range(len(book)):
         if idx > 4999:
             break
-        if "馆际" in name[i] or "耳机" in name[i] or "教程" in name[i] or "指导" in name[i] or "引论" in name[i] or "数学分析" in name[i] or "高等代数" in name[i] or "考试" in name[i] or "报" in name[i]:
+        if "馆际" in name[i] or "耳机" in name[i] or "教程" in name[i] or "指导" in name[i] or "引论" in name[i] or "数学分析" in name[i] or "高等代数" in name[i] or "考试" in name[i] or "报" in name[i] or "刊" in name[i] or "原理" in name[i]:
             continue
         idx += 1
         writer.writerow((idx, book[i], name[i], num[i]))
@@ -92,7 +92,7 @@ def loadData(cur_list):
 if __name__ == "__main__":
     server = "127.0.0.1"    # 数据库服务器名称或IP
     user = "root"   #  用户名
-    month_list = ["202110", "202111", "202112", "202201", "202202", "202203", "202204", "202205", "202206", "202207", "202208"]
+    month_list = ["202110", "202111", "202112", "202201", "202202", "202203", "202204", "202205", "202206", "202207", "202208", "202209"]
     password = "284284dfl" # 密码
     cur_list = []
     for i in month_list:
