@@ -110,7 +110,7 @@ def recommend_by_all_user(data, W, k=3, N=10):
         recommend_ckey_list = sorted(rank.items(), key=operator.itemgetter(1), reverse=True)[0:N]
         recommend.setdefault(user, {})
         recommend[user]["ckey_list"] = recommend_ckey_list
-    save_dic("data/recommend_202210.pkl", recommend)
+    save_dic("data/recommend_202211.pkl", recommend)
     return
 
 
@@ -147,12 +147,12 @@ if __name__ == "__main__":
     load_data = False # 是否读取保存的数据
     server = "127.0.0.1"    # 数据库服务器名称或IP
     user = "root"   #  用户名
-    month_list = ["202110", "202111", "202112", "202201", "202202", "202203", "202204", "202205", "202206", "202207", "202208", "202209", "202210"]
+    month_list = ["202110", "202111", "202112", "202201", "202202", "202203", "202204", "202205", "202206", "202207", "202208", "202209", "202210", "202211"]
     password = "284284dfl" # 密码
     database =  "userlog_20211020" # 数据库名称
     if load_data:
-        data = load_dic("data/data_202210.pkl")
-        W = load_dic("data/W_202210.pkl")
+        data = load_dic("data/data_202211.pkl")
+        W = load_dic("data/W_202211.pkl")
     else:
         cur_list = []
         db = pymysql.connect(host=server, user=user, passwd=password, db=database)
@@ -162,9 +162,9 @@ if __name__ == "__main__":
             db_month = pymysql.connect(host=server, user=user, passwd=password, db=database_month)
             cur_list.append(db_month.cursor())
         data = loadData(cur_list)  # 获得数据
-        save_dic("data/data_202210.pkl", data)
+        save_dic("data/data_202211.pkl", data)
         W = similarity(data)  # 计算图书相似矩阵
-        save_dic("data/W_202210.pkl", W)
+        save_dic("data/W_202211.pkl", W)
         print("---已保存数据---")
     
     recommend_by_all_user(data, W, 10, 200)

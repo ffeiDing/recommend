@@ -63,7 +63,7 @@ def loadData(cur_list):
 
 
     idx = 0
-    csvFile=open("data/hotbook_202110_202210.csv",'w',newline='')
+    csvFile=open("data/hotbook_202110_202211.csv",'w',newline='')
     writer=csv.writer(csvFile)
     for i in range(len(book)):
         if idx > 4999:
@@ -76,7 +76,7 @@ def loadData(cur_list):
 
 
     idx = 0
-    csvFile=open("data/hotbook_202110_202210_withname.csv",'w',newline='')
+    csvFile=open("data/hotbook_202110_202211_withname.csv",'w',newline='')
     writer=csv.writer(csvFile)
     for i in range(len(book)):
         if idx > 4999:
@@ -92,7 +92,7 @@ def loadData(cur_list):
 if __name__ == "__main__":
     server = "127.0.0.1"    # 数据库服务器名称或IP
     user = "root"   #  用户名
-    month_list = ["202110", "202111", "202112", "202201", "202202", "202203", "202204", "202205", "202206", "202207", "202208", "202209", "202210"]
+    month_list = ["202110", "202111", "202112", "202201", "202202", "202203", "202204", "202205", "202206", "202207", "202208", "202209", "202210", "202211"]
     password = "284284dfl" # 密码
     cur_list = []
     for i in month_list:
