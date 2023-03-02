@@ -63,7 +63,7 @@ def loadData(cur_list):
 
 
     idx = 0
-    csvFile=open("data/hotbook_202110_202301.csv",'w',newline='')
+    csvFile=open("data/hotbook_202110_202302.csv",'w',newline='')
     writer=csv.writer(csvFile)
     for i in range(len(book)):
         if idx > 4999:
@@ -76,7 +76,7 @@ def loadData(cur_list):
 
 
     idx = 0
-    csvFile=open("data/hotbook_202110_202301_withname.csv",'w',newline='')
+    csvFile=open("data/hotbook_202110_202302_withname.csv",'w',newline='')
     writer=csv.writer(csvFile)
     for i in range(len(book)):
         if idx > 4999:
